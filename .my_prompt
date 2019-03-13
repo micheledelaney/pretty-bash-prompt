@@ -1,0 +1,210 @@
+#!/usr/bin/env bash
+# If we are on a colored terminal
+if tput setaf 1 &> /dev/null; then
+  # Reset the shell from our `if` check
+  tput sgr0 &> /dev/null
+
+  # Save common color actions
+  bold="$(tput bold)"
+  reset="$(tput sgr0)"
+
+  # If the terminal supports at least 256 colors, write out our 256 color based set
+  if [[ "$(tput colors)" -ge 256 ]] &> /dev/null; then
+    dark_red="$bold$(tput setaf 124)"
+    red="$bold$(tput setaf 196)"
+    dark_orange="$bold$(tput setaf 202)"
+    orange="$bold$(tput setaf 208)"
+    light_orange="$bold$(tput setaf 214)"
+    dark_yellow="$bold$(tput setaf 220)"
+    yellow="$bold$(tput setaf 226)"
+    light_yellow="$bold$(tput setaf 229)"
+    super_light_yellow="$bold$(tput setaf 230)"
+  else
+  # Otherwise, use colors from our set of 8
+    blue="$bold$(tput setaf 4)"
+    white="$bold$(tput setaf 7)"
+    cyan="$bold$(tput setaf 6)"
+    green="$bold$(tput setaf 2)"
+    yellow="$bold$(tput setaf 3)"
+    magenta="$bold$(tput setaf 3)"
+    yellow="$bold$(tput setaf 3)"
+  fi
+
+  symbol_color="$bold"
+
+else
+# Otherwise, use ANSI escape sequences for coloring
+  dark_red='\033[01;38;5;124m'
+  red='\033[01;38;5;196m'
+  dark_orange='\033[01;38;5;202m'
+  orange='\033[01;38;5;208m'
+  light_orange='\033[01;38;5;214m'
+  dark_yellow='\033[01;38;5;220m'
+  yellow='\033[01;38;5;226m'
+  light_yellow='\033[01;38;5;229m'
+  super_light_yellow='\033[01;38;5;230m'
+  reset='\e[0m'
+
+fi
+
+# Define the default prompt terminator character '$'
+if [[ "$UID" == 0 ]]; then
+  symbol="!!"
+else
+  symbol="\$"
+fi
+
+# Set up symbols
+synced=""
+dirty_synced="*"
+unpushed="△"
+dirty_unpushed="▲"
+unpulled="▽"
+dirty_unpulled="▼"
+unpushed_unpulled="⬡"
+dirty_unpushed_unpulled="⬢"
+
+function get_git_branch() {
+  # On branches, this will return the branch name
+  # On non-branches, (no branch)
+  ref="$(git symbolic-ref HEAD 2> /dev/null | sed -e 's/refs\/heads\///')"
+  if [[ "$ref" != "" ]]; then
+    echo "$ref"
+  else
+    echo "(no branch)"
+  fi
+}
+
+is_branch1_behind_branch2 () {
+  # Find the first log (if any) that is in branch1 but not branch2
+  first_log="$(git log $1..$2 -1 2> /dev/null)"
+
+  # Exit with 0 if there is a first log, 1 if there is not
+  [[ -n "$first_log" ]]
+}
+
+branch_exists () {
+  # List remote branches           | # Find our branch and exit with 0 or 1 if found/not found
+  git branch --remote 2> /dev/null | grep --quiet "$1"
+}
+
+parse_git_ahead () {
+  # Grab the local and remote branch
+  branch="$(get_git_branch)"
+  remote="$(git config --get "branch.${branch}.remote" || echo -n "origin")"
+  remote_branch="$remote/$branch"
+  # If the remote branch is behind the local branch
+  # or it has not been merged into origin (remote branch doesn't exist)
+  if (is_branch1_behind_branch2 "$remote_branch" "$branch" ||
+      ! branch_exists "$remote_branch"); then
+    # echo our character
+    echo 1
+  fi
+}
+
+parse_git_behind () {
+  # Grab the branch
+  branch="$(get_git_branch)"
+  remote="$(git config --get "branch.${branch}.remote" || echo -n "origin")"
+  remote_branch="$remote/$branch"
+  # If the local branch is behind the remote branch
+  if is_branch1_behind_branch2 "$branch" "$remote_branch"; then
+    # echo our character
+    echo 1
+  fi
+}
+
+function parse_git_dirty() {
+  # If the git status has *any* changes (e.g. dirty), echo our character
+  if [[ -n "$(git status --porcelain 2> /dev/null)" ]]; then
+    echo 1
+  fi
+}
+
+function is_on_git() {
+  git rev-parse 2> /dev/null
+}
+
+function get_git_status() {
+  # Grab the git dirty and git behind
+  dirty_branch="$(parse_git_dirty)"
+  branch_ahead="$(parse_git_ahead)"
+  branch_behind="$(parse_git_behind)"
+
+  # Iterate through all the cases and if it matches, then echo
+  if [[ "$dirty_branch" == 1 && "$branch_ahead" == 1 && "$branch_behind" == 1 ]]; then
+    echo "$dirty_unpushed_unpulled"
+  elif [[ "$branch_ahead" == 1 && "$branch_behind" == 1 ]]; then
+    echo "$unpushed_unpulled"
+  elif [[ "$dirty_branch" == 1 && "$branch_ahead" == 1 ]]; then
+    echo "$dirty_unpushed"
+  elif [[ "$branch_ahead" == 1 ]]; then
+    echo "$unpushed"
+  elif [[ "$dirty_branch" == 1 && "$branch_behind" == 1 ]]; then
+    echo "$dirty_unpulled"
+  elif [[ "$branch_behind" == 1 ]]; then
+    echo "$unpulled"
+  elif [[ "$dirty_branch" == 1 ]]; then
+    echo "$dirty_synced"
+  else # clean
+    echo "$synced"
+  fi
+}
+
+get_git_info () {
+  # Grab the branch
+  branch="$(get_git_branch)"
+
+  # If there are any branches
+  if [[ "$branch" != "" ]]; then
+    # Echo the branch
+    output="$branch"
+    # Echo our output
+    echo "$output"
+  fi
+}
+
+user=$(whoami)
+
+colors=(
+  $dark_red
+  $red
+  $dark_orange
+  $orange
+  $light_orange
+  $dark_yellow
+  $yellow
+  $light_yellow
+  $super_light_yellow
+  $light_yellow
+  $yellow
+  $dark_yellow
+  $light_orange
+  $orange
+  $dark_orange
+  $red
+  $dark_red
+  )
+
+function get_name() {
+   for (( i=0; i<${#1}; i++ ));
+     do echo -n "${colors[$i]}${1:$i:1} ";
+   done
+}
+
+if [[ "$(tput colors)" -ge 256 ]] &> /dev/null; then
+	PS1="\[$reset\]\$(get_name \u)\[${colors["${#user}"]}\] @ \[${colors["${#user}" + 1]}\]\w \$( is_on_git && \
+    echo -n \" \[${colors["${#user}" + 2]}\]on\[$reset\] \" && \
+    echo -n \"\[${colors["${#user}" + 3]}\]\$(get_git_info)\" && \
+    echo -n \"\[${colors["${#user}" + 4]}\] \$(get_git_status)\" && \
+	echo -n \"\[${colors["${#user}" + 5]}\]\")\n\[$dark_red\]$symbol \[$reset\]"
+
+else
+  PS1="\[$red\]michele \[$blue\] @ \[$yellow\] \w\[$reset\]\
+  \$( is_on_git && \
+    echo -n \" \[$yellow\]on\[$reset\] \" && \
+    echo -n \"\[$dark_yellow\]\$(get_git_info)\" && \
+    echo -n \"\[$dark_yellow\] \$(get_git_status)\" && \
+    echo -n \"\[$reset\]\")\n\[$dark_red\]$symbol \[$reset\]"
+
+fi
