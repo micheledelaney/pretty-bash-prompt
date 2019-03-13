@@ -164,7 +164,10 @@ get_git_info () {
   fi
 }
 
-user=$(whoami)
+# if you want your username to depend on the ENV variable, use this:
+user=$USER
+# otherwise, use this:
+# user=$(whoami)
 
 colors=(
   $dark_red
@@ -193,7 +196,7 @@ function get_name() {
 }
 
 if [[ "$(tput colors)" -ge 256 ]] &> /dev/null; then
-	PS1="\[$reset\]\$(get_name \u)\[${colors["${#user}"]}\] @ \[${colors["${#user}" + 1]}\]\w \$( is_on_git && \
+	PS1="\[$reset\]\$(get_name $user)\[${colors["${#user}"]}\] @ \[${colors["${#user}" + 1]}\]\w \$( is_on_git && \
     echo -n \" \[${colors["${#user}" + 2]}\]on\[$reset\] \" && \
     echo -n \"\[${colors["${#user}" + 3]}\]\$(get_git_info)\" && \
     echo -n \"\[${colors["${#user}" + 4]}\] \$(get_git_status)\" && \
