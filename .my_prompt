@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # If we are on a colored terminal
 if tput setaf 1 &> /dev/null; then
   # Reset the shell from our `if` check
@@ -201,7 +202,7 @@ if [[ "$(tput colors)" -ge 256 ]] &> /dev/null; then
     echo -n \"\[${colors["${#user}" + 3]}\]\$(get_git_info)\" && \
     echo -n \"\[${colors["${#user}" + 4]}\] \$(get_git_status)\" && \
 	echo -n \"\[${colors["${#user}" + 5]}\]\")\n\[$dark_red\]$symbol \[$reset\]"
-
+# i still need to set it properly
 else
   PS1="\[$red\]michele \[$blue\] @ \[$yellow\] \w\[$reset\]\
   \$( is_on_git && \
