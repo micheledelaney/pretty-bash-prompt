@@ -35,6 +35,7 @@ if tput setaf 1 &> /dev/null; then
 
 else
 # Otherwise, use ANSI escape sequences for coloring
+# still need to set the one for a not 256 color based set
   dark_red='\033[01;38;5;124m'
   red='\033[01;38;5;196m'
   dark_orange='\033[01;38;5;202m'
@@ -196,19 +197,19 @@ function get_name() {
    done
 }
 
+# if 256 colors
 if [[ "$(tput colors)" -ge 256 ]] &> /dev/null; then
-	PS1="\[$reset\]\$(get_name $user)\[${colors["${#user}"]}\] @ \[${colors["${#user}" + 1]}\]\w \$( is_on_git && \
+	PS1="\[$reset\]\$(get_name $user)\[${colors["${#user}"]}\] in \[${colors["${#user}" + 1]}\]\w \$( is_on_git && \
     echo -n \" \[${colors["${#user}" + 2]}\]on\[$reset\] \" && \
     echo -n \"\[${colors["${#user}" + 3]}\]\$(get_git_info)\" && \
     echo -n \"\[${colors["${#user}" + 4]}\] \$(get_git_status)\" && \
 	echo -n \"\[${colors["${#user}" + 5]}\]\")\n\[$dark_red\]$symbol \[$reset\]"
-# i still need to set it properly
 else
-  PS1="\[$red\]michele \[$blue\] @ \[$yellow\] \w\[$reset\]\
+  PS1="\[$red\]"$user" \[$blue\] in \[$yellow\] \w\[$reset\]\
   \$( is_on_git && \
     echo -n \" \[$yellow\]on\[$reset\] \" && \
-    echo -n \"\[$dark_yellow\]\$(get_git_info)\" && \
-    echo -n \"\[$dark_yellow\] \$(get_git_status)\" && \
-    echo -n \"\[$reset\]\")\n\[$dark_red\]$symbol \[$reset\]"
+    echo -n \"\[$yellow\]\$(get_git_info)\" && \
+    echo -n \"\[$yellow\] \$(get_git_status)\" && \
+    echo -n \"\[$reset\]\")\n\[$yellow\]$symbol \[$reset\]"
 
 fi
