@@ -205,7 +205,7 @@ if [[ "$(tput colors)" -ge 256 ]] &> /dev/null; then
     echo -n \"\[${colors["${#user}" + 4]}\] \$(get_git_status)\" && \
 	echo -n \"\[${colors["${#user}" + 5]}\]\")\n\[$dark_red\]$symbol \[$reset\]"
 else
-  PS1="\[$red\]"$user" \[$blue\] in \[$yellow\] \w\[$reset\]\
+  PS1="\[$red\]$user \[$blue\] in \[$yellow\] \w\[$reset\]\
   \$( is_on_git && \
     echo -n \" \[$yellow\]on\[$reset\] \" && \
     echo -n \"\[$yellow\]\$(get_git_info)\" && \
