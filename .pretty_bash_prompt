@@ -1,5 +1,6 @@
-# vim: set filetype=bash :
 #!/usr/bin/env bash
+
+# setting colorscheme {{{1
 
 # If we support tput setaf
 if tput setaf 1 &> /dev/null; then
@@ -12,8 +13,8 @@ if tput setaf 1 &> /dev/null; then
 
   # If the terminal supports at least 256 colors, write out our 256 color based set
   if [[ "$(tput colors)" -ge 256 ]] &> /dev/null; then
-    # colorscheme red/yellow
-    if [[ $COLOR_SCHEME_BASH_PROMPT == "red" ]]; then
+    # colorscheme yellow/red
+    if [[ $COLOR_SCHEME_BASH_PROMPT == "yellow" || $COLOR_SCHEME_BASH_PROMPT == "red" ]]; then
       color1="$bold$(tput setaf 124)"
       color2="$bold$(tput setaf 196)"
       color3="$bold$(tput setaf 202)"
@@ -49,7 +50,7 @@ else
 # Otherwise, use ANSI escape sequences for coloring
 # still need to set the one for a not 256 color based set
   reset='\e[0m'
-  if [[ $COLOR_SCHEME_BASH_PROMPT == "red" ]]; then
+  if [[ $COLOR_SCHEME_BASH_PROMPT == "yellow" || $COLOR_SCHEME_BASH_PROMPT == "red" ]]; then
     # colorscheme red/yellow
     color1='\033[01;38;5;124m'
     color2='\033[01;38;5;196m'
@@ -74,6 +75,8 @@ else
   fi
 fi
 
+# 1}}}
+
 # When as root, use !! as symbol
 if [[ "$UID" == 0 ]]; then
   symbol="!!"
@@ -82,6 +85,7 @@ else
   symbol="\$"
 fi
 
+# git functions {{{1
 # Set up symbols
 synced=""
 dirty_synced="*"
@@ -193,48 +197,94 @@ function get_git_info () {
   fi
 }
 
+# 1}}}
+
 # If you want your username to depend on the ENV variable, use this:
 user="[[$USER]]"
 # Otherwise, use this:
 # user="[[$(whoami)]]"
 
-colors=(
-  $color1
-  $color2
-  $color3
-  $color4
-  $color5
-  $color6
-  $color7
-  $color8
-  $color9
-  $color8
-  $color7
-  $color6
-  $color5
-  $color4
-  $color3
-  $color2
-  $color1
-  )
+if [[ $COLOR_SCHEME_BASH_PROMPT == "red" || $COLOR_SCHEME_BASH_PROMPT == "blue" ]]; then
+  colors=(
+    $color9
+    $color8
+    $color7
+    $color6
+    $color5
+    $color4
+    $color3
+    $color2
+    $color1
+    )
+else
+   colors=(
+    $color1
+    $color2
+    $color3
+    $color4
+    $color5
+    $color6
+    $color7
+    $color8
+    $color9
+    )
+fi 
 
+# populate color_array {{{1
+
+len_name=${#user}
+# Gets the middle of the name
+middle_of_name=$(($len_name/2))
+# When the nbr of characters in the name is even, set the two in the middle
+# as middle
+if [[ $(($middle_of_name*2)) == $len_name ]]; then
+  middle_of_name2=$(($middle_of_name - 1))
+# Otherwise both are the same value
+else
+  middle_of_name2=$middle_of_name
+fi
+# Gets the nbr of colors that are available
+nbr_colors=$((${#colors[@]} - 1))
+# The array color_array consists of as many colors as there are characters
+# in the username. It starts populating it from the middle and goes
+# simultaniously up and down.
+color_array=()
+for (( i=0; $i<=$middle_of_name; i++ )); do
+  if [[ $(($(($i / $nbr_colors))%2)) == 0 ]]; then
+    index=$(($i % $nbr_colors))
+  else
+    index=$(($nbr_colors - $(($i % $nbr_colors))))
+  fi
+  up=$(($middle_of_name + $i))
+  down=$(($middle_of_name2 - $i))
+  color_array[${up}]=${colors[$nbr_colors - $index]}
+  color_array[${down}]=${colors[$nbr_colors - $index]}
+  if [[ $i == $middle_of_name ]]; then
+    color_array[$((${up} + 1))]=${colors[$nbr_colors - $index]}
+    color_array[$((${up} + 2))]=${colors[$nbr_colors - $index]}
+    color_array[$((${up} + 3))]=${colors[$nbr_colors - $index]}
+  fi
+done
+
+# 1}}}
+# set PS1 {{{1
 # Iterates through the name and echoes each character at a time in color
 function get_name() {
-   for (( i=0; i<${#1}; i++ ));
-     do echo -n "${colors[$i]}${1:$i:1} ";
-   done
+  for (( i=0; i<${#1}; i++ ));
+    do echo -n "${color_array[$i]}${1:$i:1} "
+  done
 }
 
 # If 256 colors
 if [[ "$(tput colors)" -ge 256 ]] &> /dev/null; then
   PS1="\[$reset\]\$(get_name $user)\
-  \[${colors["${#user}"]}\]in\
-  \[${colors["${#user}" + 1]}\]\w\
+  \[${color_array[$len_name]}\]in\
+  \[${color_array[$len_name]}\]\w\
   \$( is_on_git && \
-  echo -n \"\[${colors["${#user}" + 2]}\]on \" && \
-  echo -n \"\[${colors["${#user}" + 3]}\]\$(get_git_info)\" && \
-  echo -n \"\[${colors["${#user}" + 4]}\] \$(get_git_status)\" && \
-  echo -n \"\[${colors["${#user}" + 5]}\]\")\n\[$color1\]$symbol \[$reset\]"
+  echo -n \"\[${color_array[$len_name]}\]on  \" && \
+  echo -n \"\[${color_array[$len_name]}\]\$(get_git_info)\" && \
+  echo -n \"\[${color_array[$len_name]}\] \$(get_git_status)\" && \
+  echo -n \"\[${color_array[$len_name]}\]\")\n\[${color_array[0]}\]$symbol \[$reset\]"
 # Sets prompt in 16 colors
 else
   PS1="\[$cyan\]"$user" \[$cyan\] in \[$cyan\] \w\[$reset\]\
@@ -243,5 +293,5 @@ else
     echo -n \"\[$cyan\]\$(get_git_info)\" && \
     echo -n \"\[$cyan\] \$(get_git_status)\" && \
     echo -n \"\[$reset\]\")\n\[$cyan\]$symbol \[$reset\]"
-
 fi
+# 1}}}
