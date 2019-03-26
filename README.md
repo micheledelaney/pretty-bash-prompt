@@ -27,7 +27,8 @@ There are three available colorschemes:
 - rose  
 - blue  
 - red  
-- yellow  
+- yellow
+
 By default is uses the rose one, but you can easily change it by setting the COLOR_SCHEME_BASH_PROMPT variable to the colorscheme you want.  
 example:  
 `export COLOR_SCHEME_BASH_PROMPT="blue"`  
