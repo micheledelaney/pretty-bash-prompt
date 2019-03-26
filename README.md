@@ -32,4 +32,20 @@ By default is uses the rose one, but you can easily change it by setting the COL
 example:  
 `export COLOR_SCHEME_BASH_PROMPT="blue"`  
 Just add that line in your .bashrc before it executes the .pretty_bash_prompt file.  
-![colorschemes](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorschemes.png)
+![colorschemes](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorschemes.png)  
+  
+You can change the color of the directory or the branch with the variables DIR_COLOR and BRANCH_COLOR.  
+Once you sorced the .pretty_bash_prompt file you can run the command  
+`print_colorscheme`  
+which will show you the colors you can choose from.  
+When you are in the default colorscheme, these are your options:  
+![colorscheme blue](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorscheme_blue.png)  
+To change the default directory color, just add the variable DIR_COLOR with the new value to your .bashrc:  
+`export DIR_COLOR=4`  
+When you are in another colorscheme, print_colorscheme will show you different color options. In the red one these are your options:  
+![colorscheme red](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorscheme_red.png))  
+  
+To change the branch color you have to do basically the same, just change your BRANCH_COLOR variable:  
+`export BRANCH_COLOR=4`  
+Just be aware that you need to set those values before you sorce the .pretty_bash_prompt file. Also, when you want to change your colorscheme and/or one of the colors you need to source the .pretty_bash_prompt again.  
+
