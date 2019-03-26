@@ -43,7 +43,7 @@ When you are in the default colorscheme, these are your options:
 To change the default directory color, just add the variable DIR_COLOR with the new value to your .bashrc:  
 `export DIR_COLOR=4`  
 When you are in another colorscheme, print_colorscheme will show you different color options. In the red one these are your options:  
-![colorscheme red](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorscheme_red.png))  
+![colorscheme red](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorscheme_red.png)  
   
 To change the branch color you have to do basically the same, just change your BRANCH_COLOR variable:  
 `export BRANCH_COLOR=4`  
