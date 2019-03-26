@@ -1,5 +1,5 @@
 # pretty-bash-prompt
-![screenshot pretty bash prompt](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_pretty_bash_prompt.png)
+![screenshot pretty bash prompt](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_pretty_bash_prompt.png)  
 Based on [sexy_bash_prompt by twolfson](https://github.com/twolfson/sexy-bash-prompt)  
   
   
