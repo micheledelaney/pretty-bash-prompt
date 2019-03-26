@@ -17,7 +17,7 @@ dirty, unpushed & unpulled= ⬢
 
 #### Installation
 Get the .my_prompt file:  
-`curl https://raw.githubusercontent.com/cmicheledelaney/my_prompt/master/.my_prompt > ~/.pretty_bash_prompt`    
+`curl https://raw.githubusercontent.com/cmicheledelaney/pretty-bash-prompt/master/.pretty_bash_prompt > ~/.pretty_bash_prompt`    
 Change your shell to bash and add this line of code in your .bashrc:  
 `source ~/.pretty_bash_prompt`  
 
