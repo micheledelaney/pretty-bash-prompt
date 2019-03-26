@@ -23,7 +23,7 @@ Change your shell to bash and add this line of code in your .bashrc:
 If you change the path of the .my_prompt file, change it in your .bashrc accordingly.
 
 #### Settings
-There are three available colorschemes:  
+There are four available colorschemes:  
 - rose  
 - blue  
 - red  
