@@ -260,13 +260,33 @@ function get_name() {
   done
 }
 
+function print_colorscheme() {
+  for (( i=0; i<${#colors[@]}; i++ )); do
+    echo "${colors[$i]}color: $i"
+  done
+}
+
+# setting the color of the directory
+if [[ -z "$DIR_COLOR" ]]; then
+  dir_color=${color_array[$len_name]}
+else
+  dir_color=${colors[$DIR_COLOR]}
+fi
+
+# setting the branch color
+if [[ -z "$BRANCH_COLOR" ]]; then
+  branch_color=${color_array[$len_name]}
+else
+  branch_color=${colors[$BRANCH_COLOR]}
+fi
+
 # If 256 colors
 PS1="\[$reset\]\$(get_name $user) \
 \[${color_array[$len_name]}\]in  \
-\[${color_array[$len_name]}\]\w  \
+\[$dir_color\]\w  \
 \$( is_on_git && \
 echo -n \"\[${color_array[$len_name]}\]on  \" && \
-echo -n \"\[${color_array[$len_name]}\]\$(get_git_info)\" && \
+echo -n \"\[$branch_color\]\$(get_git_info)\" && \
 echo -n \"\[${color_array[$len_name]}\] \$(get_git_status)\" && \
 echo -n \"\[${color_array[$len_name]}\]\")\n\[${color_array[0]}\]$symbol \[$reset\]"
 # 1}}}
