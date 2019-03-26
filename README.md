@@ -1,5 +1,5 @@
-# my_prompt
-![Image description](https://github.com/cmicheledelaney/my_prompt/blob/master/screenshot_my_prompt.png)
+# pretty-bash-prompt
+![Image description](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_my_prompt.png)
 Based on [sexy_bash_prompt by twolfson](https://github.com/twolfson/sexy-bash-prompt)  
   
   
