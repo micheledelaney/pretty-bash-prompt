@@ -1,6 +1,7 @@
+# vim: set filetype=bash :
 #!/usr/bin/env bash
 
-# If we are on a colored terminal
+# If we support tput setaf
 if tput setaf 1 &> /dev/null; then
   # Reset the shell from our `if` check
   tput sgr0 &> /dev/null
@@ -11,47 +12,72 @@ if tput setaf 1 &> /dev/null; then
 
   # If the terminal supports at least 256 colors, write out our 256 color based set
   if [[ "$(tput colors)" -ge 256 ]] &> /dev/null; then
-    dark_red="$bold$(tput setaf 124)"
-    red="$bold$(tput setaf 196)"
-    dark_orange="$bold$(tput setaf 202)"
-    orange="$bold$(tput setaf 208)"
-    light_orange="$bold$(tput setaf 214)"
-    dark_yellow="$bold$(tput setaf 220)"
-    yellow="$bold$(tput setaf 226)"
-    light_yellow="$bold$(tput setaf 229)"
-    super_light_yellow="$bold$(tput setaf 230)"
+    # colorscheme red/yellow
+    if [[ $COLOR_SCHEME_BASH_PROMPT == "red" ]]; then
+      color1="$bold$(tput setaf 124)"
+      color2="$bold$(tput setaf 196)"
+      color3="$bold$(tput setaf 202)"
+      color4="$bold$(tput setaf 208)"
+      color5="$bold$(tput setaf 214)"
+      color6="$bold$(tput setaf 220)"
+      color7="$bold$(tput setaf 226)"
+      color8="$bold$(tput setaf 229)"
+      color9="$bold$(tput setaf 230)"
+    # colorscheme blue/beige (default)
+    else
+      color1="$bold$(tput setaf 23)"
+      color2="$bold$(tput setaf 30)"
+      color3="$bold$(tput setaf 37)"
+      color4="$bold$(tput setaf 73)"
+      color5="$bold$(tput setaf 66)"
+      color6="$bold$(tput setaf 102)"
+      color7="$bold$(tput setaf 138)"
+      color8="$bold$(tput setaf 174)"
+      color9="$bold$(tput setaf 210)"
+    fi
   else
   # Otherwise, use colors from our set of 8
     blue="$bold$(tput setaf 4)"
     white="$bold$(tput setaf 7)"
     cyan="$bold$(tput setaf 6)"
     green="$bold$(tput setaf 2)"
-    yellow="$bold$(tput setaf 3)"
+    orange="$bold$(tput setaf 3)"
     magenta="$bold$(tput setaf 3)"
-    yellow="$bold$(tput setaf 3)"
+    red="$bold$(tput setaf 3)"
   fi
-
-  symbol_color="$bold"
-
 else
 # Otherwise, use ANSI escape sequences for coloring
 # still need to set the one for a not 256 color based set
-  dark_red='\033[01;38;5;124m'
-  red='\033[01;38;5;196m'
-  dark_orange='\033[01;38;5;202m'
-  orange='\033[01;38;5;208m'
-  light_orange='\033[01;38;5;214m'
-  dark_yellow='\033[01;38;5;220m'
-  yellow='\033[01;38;5;226m'
-  light_yellow='\033[01;38;5;229m'
-  super_light_yellow='\033[01;38;5;230m'
   reset='\e[0m'
-
+  if [[ $COLOR_SCHEME_BASH_PROMPT == "red" ]]; then
+    # colorscheme red/yellow
+    color1='\033[01;38;5;124m'
+    color2='\033[01;38;5;196m'
+    color3='\033[01;38;5;202m'
+    color4='\033[01;38;5;208m'
+    color5='\033[01;38;5;214m'
+    color6='\033[01;38;5;220m'
+    color7='\033[01;38;5;226m'
+    color8='\033[01;38;5;229m'
+    color7='\033[01;38;5;230m'
+  else
+    # colorscheme blue/beige
+    color1='\033[01;38;5;23m'
+    color2='\033[01;38;5;30m'
+    color3='\033[01;38;5;37m'
+    color4='\033[01;38;5;73m'
+    color5='\033[01;38;5;66m'
+    color6='\033[01;38;5;102m'
+    color7='\033[01;38;5;138m'
+    color8='\033[01;38;5;174m'
+    color9='\033[01;38;5;210m'
+  fi
 fi
 
-# Define the default prompt terminator character '$'
+# When as root, use !! as symbol
 if [[ "$UID" == 0 ]]; then
   symbol="!!"
+# Define the default prompt terminator character '$'
 else
   symbol="\$"
 fi
@@ -77,7 +103,7 @@ function get_git_branch() {
   fi
 }
 
-is_branch1_behind_branch2 () {
+function is_branch1_behind_branch2 () {
   # Find the first log (if any) that is in branch1 but not branch2
   first_log="$(git log $1..$2 -1 2> /dev/null)"
 
@@ -85,12 +111,12 @@ is_branch1_behind_branch2 () {
   [[ -n "$first_log" ]]
 }
 
-branch_exists () {
+function branch_exists () {
   # List remote branches           | # Find our branch and exit with 0 or 1 if found/not found
   git branch --remote 2> /dev/null | grep --quiet "$1"
 }
 
-parse_git_ahead () {
+function parse_git_ahead () {
   # Grab the local and remote branch
   branch="$(get_git_branch)"
   remote="$(git config --get "branch.${branch}.remote" || echo -n "origin")"
@@ -104,7 +130,7 @@ parse_git_ahead () {
   fi
 }
 
-parse_git_behind () {
+function parse_git_behind () {
   # Grab the branch
   branch="$(get_git_branch)"
   remote="$(git config --get "branch.${branch}.remote" || echo -n "origin")"
@@ -124,6 +150,7 @@ function parse_git_dirty() {
 }
 
 function is_on_git() {
+  # Checks if the currect working directory is a git repo
   git rev-parse 2> /dev/null
 }
 
@@ -153,7 +180,7 @@ function get_git_status() {
   fi
 }
 
-get_git_info () {
+function get_git_info () {
   # Grab the branch
   branch="$(get_git_branch)"
 
@@ -166,50 +193,55 @@ get_git_info () {
   fi
 }
 
-# if you want your username to depend on the ENV variable, use this:
-user=$USER
-# otherwise, use this:
-# user=$(whoami)
+# If you want your username to depend on the ENV variable, use this:
+user="[[$USER]]"
+# Otherwise, use this:
+# user="[[$(whoami)]]"
 
 colors=(
-  $dark_red
-  $red
-  $dark_orange
-  $orange
-  $light_orange
-  $dark_yellow
-  $yellow
-  $light_yellow
-  $super_light_yellow
-  $light_yellow
-  $yellow
-  $dark_yellow
-  $light_orange
-  $orange
-  $dark_orange
-  $red
-  $dark_red
+  $color1
+  $color2
+  $color3
+  $color4
+  $color5
+  $color6
+  $color7
+  $color8
+  $color9
+  $color8
+  $color7
+  $color6
+  $color5
+  $color4
+  $color3
+  $color2
+  $color1
   )
 
+# Iterates through the name and echoes each character at a time in color
 function get_name() {
    for (( i=0; i<${#1}; i++ ));
      do echo -n "${colors[$i]}${1:$i:1} ";
    done
 }
 
-# if 256 colors
+# If 256 colors
 if [[ "$(tput colors)" -ge 256 ]] &> /dev/null; then
-	PS1="\[$reset\]\$(get_name $user)\[${colors["${#user}"]}\] in \[${colors["${#user}" + 1]}\]\w \$( is_on_git && \
-    echo -n \" \[${colors["${#user}" + 2]}\]on\[$reset\] \" && \
-    echo -n \"\[${colors["${#user}" + 3]}\]\$(get_git_info)\" && \
-    echo -n \"\[${colors["${#user}" + 4]}\] \$(get_git_status)\" && \
-	echo -n \"\[${colors["${#user}" + 5]}\]\")\n\[$dark_red\]$symbol \[$reset\]"
-else
-  PS1="\[$red\]$user \[$blue\] in \[$yellow\] \w\[$reset\]\
+  PS1="\[$reset\]\$(get_name $user)\
+  \[${colors["${#user}"]}\]in\
+  \[${colors["${#user}" + 1]}\]\w\
   \$( is_on_git && \
-    echo -n \" \[$yellow\]on\[$reset\] \" && \
-    echo -n \"\[$yellow\]\$(get_git_info)\" && \
-    echo -n \"\[$yellow\] \$(get_git_status)\" && \
-    echo -n \"\[$reset\]\")\n\[$yellow\]$symbol \[$reset\]"
+  echo -n \"\[${colors["${#user}" + 2]}\]on \" && \
+  echo -n \"\[${colors["${#user}" + 3]}\]\$(get_git_info)\" && \
+  echo -n \"\[${colors["${#user}" + 4]}\] \$(get_git_status)\" && \
+  echo -n \"\[${colors["${#user}" + 5]}\]\")\n\[$color1\]$symbol \[$reset\]"
+# Sets prompt in 16 colors
+else
+  PS1="\[$cyan\]"$user" \[$cyan\] in \[$cyan\] \w\[$reset\]\
+  \$( is_on_git && \
+    echo -n \" \[$cyan\]on \" && \
+    echo -n \"\[$cyan\]\$(get_git_info)\" && \
+    echo -n \"\[$cyan\] \$(get_git_status)\" && \
+    echo -n \"\[$reset\]\")\n\[$cyan\]$symbol \[$reset\]"
 
 fi
