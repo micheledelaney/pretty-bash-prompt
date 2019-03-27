@@ -265,29 +265,30 @@ function print_colorscheme() {
     echo "${colors[$i]}color: $i"
   done
 }
-
 function get_battery_stat() {
   if [[ $BATTERY_STATUS == "on" ]]; then
     battery=$(acpi | awk '{ print $4 }' | sed "s/%,/%/g")
     if [[ $battery > 90 ]]; then
-      echo -n "${colors[0]}""("$battery")"
+      echo -n "${colors[0]}($battery)"
     elif [[ $battery > 80 ]]; then
-      echo -n "${colors[1]}""("$battery")"
+      echo -n "${colors[1]}($battery)"
     elif [[ $battery > 70 ]]; then
-      echo -n "${colors[2]}""("$battery")"
+      echo -n "${colors[2]}($battery)"
     elif [[ $battery > 60 ]]; then
-      echo -n "${colors[3]}""("$battery")"
+      echo -n "${colors[3]}($battery)"
     elif [[ $battery > 50 ]]; then
-      echo -n "${colors[4]}""("$battery")"
+      echo -n "${colors[4]}($battery)"
     elif [[ $battery > 40 ]]; then
-      echo -n "${colors[5]}""("$battery")"
+      echo -n "${colors[5]}($battery)"
     elif [[ $battery > 30 ]]; then
-      echo -n "${colors[6]}""("$battery")"
+      echo -n "${colors[6]}($battery)"
     elif [[ $battery > 20 ]]; then
-      echo -n "${colors[8]}""("$battery")"
+      echo -n "${colors[7]}($battery)"
+    else
+      echo -n "${colors[8]}($battery)"
     fi
   fi
-  echo -n $reset
+  echo -n "$reset"
 }
 
 # setting the color of the directory
