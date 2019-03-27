@@ -265,45 +265,53 @@ function print_colorscheme() {
     echo "${colors[$i]}color: $i"
   done
 }
+
 function get_battery_stat() {
-  if [[ $BATTERY_STATUS == "on" ]]; then
-    battery=$(acpi | awk '{ print $4 }' | sed "s/%,/%/g")
-    if [[ $battery > 90 ]]; then
-      echo -n "${colors[0]}($battery)"
-    elif [[ $battery > 80 ]]; then
-      echo -n "${colors[1]}($battery)"
-    elif [[ $battery > 70 ]]; then
-      echo -n "${colors[2]}($battery)"
-    elif [[ $battery > 60 ]]; then
-      echo -n "${colors[3]}($battery)"
-    elif [[ $battery > 50 ]]; then
-      echo -n "${colors[4]}($battery)"
-    elif [[ $battery > 40 ]]; then
-      echo -n "${colors[5]}($battery)"
-    elif [[ $battery > 30 ]]; then
-      echo -n "${colors[6]}($battery)"
-    elif [[ $battery > 20 ]]; then
-      echo -n "${colors[7]}($battery)"
-    else
-      echo -n "${colors[8]}($battery)"
+  acpi="$(acpi -V 2> /dev/null)"
+  if [[ -n $acpi ]]; then
+    if [[ $BATTERY_STATUS == "on" ]]; then
+      battery=$(acpi | awk '{ print $4 }' | sed "s/%,/%/g")
+      if [[ $battery > 90 ]]; then
+        echo -n "${colors[0]}($battery)"
+      elif [[ $battery > 80 ]]; then
+        echo -n "${colors[1]}($battery)"
+      elif [[ $battery > 70 ]]; then
+        echo -n "${colors[2]}($battery)"
+      elif [[ $battery > 60 ]]; then
+        echo -n "${colors[3]}($battery)"
+      elif [[ $battery > 50 ]]; then
+        echo -n "${colors[4]}($battery)"
+      elif [[ $battery > 40 ]]; then
+        echo -n "${colors[5]}($battery)"
+      elif [[ $battery > 30 ]]; then
+        echo -n "${colors[6]}($battery)"
+      elif [[ $battery > 20 ]]; then
+        echo -n "${colors[7]}($battery)"
+      else
+        echo -n "${colors[8]}($battery)"
+      fi
     fi
   fi
   echo -n "$reset"
 }
 
 # setting the color of the directory
-if [[ -z "$DIR_COLOR" ]]; then
-  dir_color=${color_array[$len_name]}
-else
-  dir_color=${colors[$DIR_COLOR]}
-fi
+function get_dir_color() {
+  if [[ -z "$DIR_COLOR" ]]; then
+    echo -n ${color_array[$len_name]}
+  else
+    echo -n ${colors[$DIR_COLOR]}
+  fi
+}
 
 # setting the branch color
-if [[ -z "$BRANCH_COLOR" ]]; then
-  branch_color=${color_array[$len_name]}
-else
-  branch_color=${colors[$BRANCH_COLOR]}
-fi
+function get_branch_color() {
+  if [[ -z "$BRANCH_COLOR" ]]; then
+    echo -n ${color_array[$len_name]}
+  else
+    echo -n ${colors[$BRANCH_COLOR]}
+  fi
+}
 
 # If 256 colors
 PS1="\[$reset\]\$(get_name $user) \
