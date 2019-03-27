@@ -313,13 +313,12 @@ function get_branch_color() {
   fi
 }
 
-# If 256 colors
 PS1="\[$reset\]\$(get_name $user) \
 \[${color_array[$len_name]}\]in  \
-\[$dir_color\]\w  \
+\$(get_dir_color)\w  \
 \$( is_on_git && \
 echo -n \"\[${color_array[$len_name]}\]on  \" && \
-echo -n \"\[$branch_color\]\$(get_git_info)\" && \
+echo -n \"\$(get_branch_color)\$(get_git_info)\" && \
 echo -n \"\[${color_array[$len_name]}\] \$(get_git_status)\" && \
 echo -n \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)\n\[${color_array[0]}\]$symbol \[$reset\]"
 # 1}}}
