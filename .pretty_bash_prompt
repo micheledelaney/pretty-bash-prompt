@@ -87,7 +87,7 @@ else
     "$color8"
     "$color9"
     )
-fi 
+fi
 
 # 1}}}
 # When as root, use !! as symbol
@@ -300,41 +300,28 @@ function get_battery_stat() {
 # setting the color of the directory
 function get_dir_color() {
   if [[ -z "$DIR_COLOR" ]]; then
-    echo -n ${color_array[$len_name]}
+    echo -n "${color_array[$len_name]}"
   else
-    echo -n ${colors[$DIR_COLOR]}
+    echo -n "${colors[$DIR_COLOR]}"
   fi
 }
 
 # setting the branch color
 function get_branch_color() {
   if [[ -z "$BRANCH_COLOR" ]]; then
-    echo -n ${color_array[$len_name]}
+    echo -n "${color_array[$len_name]}"
   else
-    echo -n ${colors[$BRANCH_COLOR]}
+    echo -n "${colors[$BRANCH_COLOR]}"
   fi
 }
 
-function pretty_bash_prompt() {
-  echo "Pretty Bash Prompt by cmicheledelaney
-https://github.com/cmicheledelaney
-
-To set a different colorscheme set the value of COLOR_SCHEME_PROMPT to 'red', 'blue', 'yellow', or nothing if you want the default colorscheme.
-
-      export COLOR_SCHEME_BASH_PROMPT='blue'
-
-If you want to change he color of the directory, set DIR_COLOR to the desired value between 0 and 8 (run print_colorscheme to see the available colors).
-
-      export DIR_COLOR=8
-
-To set the color of the branch just set BRANCH_COLOR accordingly.
-
-      export BRANCH_COLOR=8
-
-To display the battery status set the BATTERY_STATUS variable to 'on' (only works when acpi is installed).
-
-      export BATTER_STATUS='on'
-"
+# setting the text color
+function get_text_color() {
+  if [[ -z "$TEXT_COLOR" ]]; then
+    echo -n "${reset}"
+  else
+    echo -n "${colors[$TEXT_COLOR]}"
+  fi
 }
 
 PS1="\[$reset\]\$(get_name $user) \
@@ -344,7 +331,7 @@ PS1="\[$reset\]\$(get_name $user) \
 echo -n \"\[${color_array[$len_name]}\]on  \" && \
 echo -n \"\$(get_branch_color)\$(get_git_info)\" && \
 echo -n \"\[${color_array[$len_name]}\] \$(get_git_status)\" && \
-echo -n \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)\n\[${color_array[0]}\]$symbol \[$reset\]"
+echo -n \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)\n\[${color_array[0]}\]$symbol \[\$(get_text_color)\]"
 # 1}}}
 
 # help {{{1
