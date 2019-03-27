@@ -89,7 +89,35 @@ else
     )
 fi
 
+# Setting the color of the directory
+function get_dir_color() {
+  if [[ -z "$DIR_COLOR" ]]; then
+    echo -n "${color_array[$len_name]}"
+  else
+    echo -n "${colors[$DIR_COLOR]}"
+  fi
+}
+
+# Setting the branch color
+function get_branch_color() {
+  if [[ -z "$BRANCH_COLOR" ]]; then
+    echo -n "${color_array[$len_name]}"
+  else
+    echo -n "${colors[$BRANCH_COLOR]}"
+  fi
+}
+
+# Setting the text color
+function get_text_color() {
+  if [[ -z "$TEXT_COLOR" ]]; then
+    echo -n "${reset}"
+  else
+    echo -n "${colors[$TEXT_COLOR]}"
+  fi
+}
+
 # 1}}}
+# set symbols {{{1
 # When as root, use !! as symbol
 if [[ "$UID" == 0 ]]; then
   symbol="!!"
@@ -98,12 +126,7 @@ else
   symbol="\$"
 fi
 
-# If you want your username to depend on the ENV variable, use this:
-user="[[$USER]]"
-# Otherwise, use this:
-# user="[[$(whoami)]]"
-# git functions {{{1
-# Set up symbols
+# Set up git symbols
 synced=""
 dirty_synced="*"
 unpushed="△"
@@ -112,6 +135,54 @@ unpulled="▽"
 dirty_unpulled="▼"
 unpushed_unpulled="⬡"
 dirty_unpushed_unpulled="⬢"
+
+# 1}}}
+# get information (username, battery stat) {{{1
+# If you want your username to depend on the ENV variable, use this:
+user="[[$USER]]"
+# Otherwise, use this:
+# user="[[$(whoami)]]"
+
+
+# prints the username character by character in different colors
+function get_name() {
+  for (( i=0; i<${#1}; i++ ));
+    do echo -n "${color_array[$i]}${1:$i:1} "
+  done
+}
+
+# runs acpi to get the battery status and prints the percentage of it.
+# Depending on how much charge is left, the color changes.
+function get_battery_stat() {
+  acpi="$(acpi -V 2> /dev/null)"
+  if [[ -n $acpi ]]; then
+    if [[ $BATTERY_STATUS == "on" ]]; then
+      battery=$(acpi | awk '{ print $4 }' | sed "s/%,/%/g")
+      if [[ $battery > 90 ]]; then
+        echo -n "${colors[0]}($battery)"
+      elif [[ $battery > 80 ]]; then
+        echo -n "${colors[1]}($battery)"
+      elif [[ $battery > 70 ]]; then
+        echo -n "${colors[2]}($battery)"
+      elif [[ $battery > 60 ]]; then
+        echo -n "${colors[3]}($battery)"
+      elif [[ $battery > 50 ]]; then
+        echo -n "${colors[4]}($battery)"
+      elif [[ $battery > 40 ]]; then
+        echo -n "${colors[5]}($battery)"
+      elif [[ $battery > 30 ]]; then
+        echo -n "${colors[6]}($battery)"
+      elif [[ $battery > 20 ]]; then
+        echo -n "${colors[7]}($battery)"
+      else
+        echo -n "${colors[8]}($battery)"
+      fi
+    fi
+  fi
+  echo -n "$reset"
+}
+# 1}}}
+# git functions {{{1
 
 function get_git_branch() {
   # On branches, this will return the branch name
@@ -255,75 +326,6 @@ done
 
 # 1}}}
 # set PS1 {{{1
-# Iterates through the name and echoes each character at a time in color
-function get_name() {
-  for (( i=0; i<${#1}; i++ ));
-    do echo -n "${color_array[$i]}${1:$i:1} "
-  done
-}
-
-function print_colorscheme() {
-  for (( i=0; i<${#colors[@]}; i++ )); do
-    echo "${colors[$i]}color: $i"
-  done
-}
-
-function get_battery_stat() {
-  acpi="$(acpi -V 2> /dev/null)"
-  if [[ -n $acpi ]]; then
-    if [[ $BATTERY_STATUS == "on" ]]; then
-      battery=$(acpi | awk '{ print $4 }' | sed "s/%,/%/g")
-      if [[ $battery > 90 ]]; then
-        echo -n "${colors[0]}($battery)"
-      elif [[ $battery > 80 ]]; then
-        echo -n "${colors[1]}($battery)"
-      elif [[ $battery > 70 ]]; then
-        echo -n "${colors[2]}($battery)"
-      elif [[ $battery > 60 ]]; then
-        echo -n "${colors[3]}($battery)"
-      elif [[ $battery > 50 ]]; then
-        echo -n "${colors[4]}($battery)"
-      elif [[ $battery > 40 ]]; then
-        echo -n "${colors[5]}($battery)"
-      elif [[ $battery > 30 ]]; then
-        echo -n "${colors[6]}($battery)"
-      elif [[ $battery > 20 ]]; then
-        echo -n "${colors[7]}($battery)"
-      else
-        echo -n "${colors[8]}($battery)"
-      fi
-    fi
-  fi
-  echo -n "$reset"
-}
-
-# setting the color of the directory
-function get_dir_color() {
-  if [[ -z "$DIR_COLOR" ]]; then
-    echo -n "${color_array[$len_name]}"
-  else
-    echo -n "${colors[$DIR_COLOR]}"
-  fi
-}
-
-# setting the branch color
-function get_branch_color() {
-  if [[ -z "$BRANCH_COLOR" ]]; then
-    echo -n "${color_array[$len_name]}"
-  else
-    echo -n "${colors[$BRANCH_COLOR]}"
-  fi
-}
-
-# setting the text color
-function get_text_color() {
-  if [[ -z "$TEXT_COLOR" ]]; then
-    echo -n "${reset}"
-  else
-    echo -n "${colors[$TEXT_COLOR]}"
-  fi
-}
-
 PS1="\[$reset\]\$(get_name $user) \
 \[${color_array[$len_name]}\]in  \
 \$(get_dir_color)\w  \
@@ -333,8 +335,16 @@ echo -n \"\$(get_branch_color)\$(get_git_info)\" && \
 echo -n \"\[${color_array[$len_name]}\] \$(get_git_status)\" && \
 echo -n \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)\n\[${color_array[0]}\]$symbol \[\$(get_text_color)\]"
 # 1}}}
+# user functions (print_colorscheme/help) {{{1
 
-# help {{{1
+# prints the available colors in the chosen colorscheme with their values
+function print_colorscheme() {
+  for (( i=0; i<${#colors[@]}; i++ )); do
+    echo "${colors[$i]}color: $i"
+  done
+}
+
+# general information about the settings
 function pretty_bash_prompt() {
   echo "Pretty Bash Prompt by cmicheledelaney
 https://github.com/cmicheledelaney
