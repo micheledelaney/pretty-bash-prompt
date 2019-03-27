@@ -243,7 +243,9 @@ for (( i=0; i<=middle_of_name; i++ )); do
   up=$((middle_of_name + i))
   down=$((middle_of_name2 - i))
   color_array[${up}]=${colors[$nbr_colors - $index]}
-  color_array[${down}]=${colors[$nbr_colors - $index]}
+  if [[ $down -ge 0 ]]; then
+    color_array[${down}]=${colors[$nbr_colors - $index]}
+  fi
   if [[ $i == "$middle_of_name" ]]; then
     color_array[$((up + 1))]=${colors[$nbr_colors - $index]}
     color_array[$((up + 2))]=${colors[$nbr_colors - $index]}
@@ -343,4 +345,28 @@ echo -n \"\[${color_array[$len_name]}\]on  \" && \
 echo -n \"\$(get_branch_color)\$(get_git_info)\" && \
 echo -n \"\[${color_array[$len_name]}\] \$(get_git_status)\" && \
 echo -n \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)\n\[${color_array[0]}\]$symbol \[$reset\]"
+# 1}}}
+
+# help {{{1
+function pretty_bash_prompt() {
+  echo "Pretty Bash Prompt by cmicheledelaney
+https://github.com/cmicheledelaney
+
+To set a different colorscheme set the value of COLOR_SCHEME_PROMPT to 'red', 'blue', 'yellow', or nothing if you want the default colorscheme.
+
+      export COLOR_SCHEME_BASH_PROMPT='blue'
+
+If you want to change he color of the directory, set DIR_COLOR to the desired value between 0 and 8 (run print_colorscheme to see the available colors).
+
+      export DIR_COLOR=8
+
+To set the color of the branch just set BRANCH_COLOR accordingly.
+
+      export BRANCH_COLOR=8
+
+To display the battery status set the BATTERY_STATUS variable to 'on' (only works when acpi is installed).
+
+      export BATTER_STATUS='on'
+"
+}
 # 1}}}
