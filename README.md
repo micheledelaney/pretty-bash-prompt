@@ -32,7 +32,8 @@ There are four available colorschemes:
 By default 'rose' is set but you can easily change it by setting the COLOR_SCHEME_BASH_PROMPT variable to the colorscheme you want.  
 Example:  
 `export COLOR_SCHEME_BASH_PROMPT="blue"`  
-Just add that line in your .bashrc before it sources the .pretty_bash_prompt file.  
+Just add that line in your .bashrc before it sources the .pretty_bash_prompt file.    
+  
 ![colorschemes](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorschemes.png)  
   
 #### Change color of the directory
@@ -41,10 +42,13 @@ Once you sourced the .pretty_bash_prompt file you can run the command
 `print_colorscheme`  
 which will show you the colors you can choose from.  
 When the default colorscheme is set these are your options:  
+  
 ![colorscheme rose](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorscheme_rose.png)  
+  
 To change the default directory color just add the variable DIR_COLOR with the new value to your .bashrc:  
 `export DIR_COLOR=4`  
-When another colorscheme is set print_colorscheme will show you different color options. In the red one these are your options:  
+When another colorscheme is set print_colorscheme will show you different color options. In the red one these are your options:    
+  
 ![colorscheme red](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorscheme_red.png)  
   
 #### Change color of the branch
@@ -54,5 +58,5 @@ Just be aware that you need to set the colorscheme before you source the .pretty
 
 #### Add battery status
 To add the battery status at the end of your prompt set the variable BATTERY_STATUS to 'on'.  
-`export BATTERY_STATUS="on"`. 
+`export BATTERY_STATUS="on"`.   
 So far it only works when acpi is installed.  
