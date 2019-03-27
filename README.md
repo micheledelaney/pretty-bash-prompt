@@ -39,7 +39,7 @@ Once you sourced the .pretty_bash_prompt file you can run the command
 `print_colorscheme`  
 which will show you the colors you can choose from.  
 When the default colorscheme is set these are your options:  
-![colorscheme blue](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorscheme_blue.png)  
+![colorscheme rose](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorscheme_rose.png)  
 To change the default directory color just add the variable DIR_COLOR with the new value to your .bashrc:  
 `export DIR_COLOR=4`  
 When another colorscheme is set print_colorscheme will show you different color options. In the red one these are your options:  
