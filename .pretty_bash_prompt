@@ -313,6 +313,28 @@ function get_branch_color() {
   fi
 }
 
+function pretty_bash_prompt() {
+  echo "Pretty Bash Prompt by cmicheledelaney
+https://github.com/cmicheledelaney
+
+To set a different colorscheme set the value of COLOR_SCHEME_PROMPT to 'red', 'blue', 'yellow', or nothing if you want the default colorscheme.
+
+      export COLOR_SCHEME_BASH_PROMPT='blue'
+
+If you want to change he color of the directory, set DIR_COLOR to the desired value between 0 and 8 (run print_colorscheme to see the available colors).
+
+      export DIR_COLOR=8
+
+To set the color of the branch just set BRANCH_COLOR accordingly.
+
+      export BRANCH_COLOR=8
+
+To display the battery status set the BATTERY_STATUS variable to 'on' (only works when acpi is installed).
+
+      export BATTER_STATUS='on'
+"
+}
+
 PS1="\[$reset\]\$(get_name $user) \
 \[${color_array[$len_name]}\]in  \
 \$(get_dir_color)\w  \
