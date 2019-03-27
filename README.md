@@ -38,7 +38,7 @@ You can change the color of the directory or the branch with the variables DIR_C
 Once you sourced the .pretty_bash_prompt file you can run the command  
 `print_colorscheme`  
 which will show you the colors you can choose from.  
-When ythe default colorscheme is set these are your options:  
+When the default colorscheme is set these are your options:  
 ![colorscheme blue](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_colorscheme_blue.png)  
 To change the default directory color just add the variable DIR_COLOR with the new value to your .bashrc:  
 `export DIR_COLOR=4`  
@@ -47,5 +47,5 @@ When another colorscheme is set print_colorscheme will show you different color 
   
 To change the branch color you have to do basically the same, just change your BRANCH_COLOR variable:  
 `export BRANCH_COLOR=4`  
-Just be aware that you need to set those values before you source the .pretty_bash_prompt file. Also, when you want to change your colorscheme and/or one of the colors you need to source the .pretty_bash_prompt again.  
+Just be aware that you need to set the colorscheme before you source the .pretty_bash_prompt file. Also, when you want to change your colorscheme you need to source the .pretty_bash_prompt again.  
 
