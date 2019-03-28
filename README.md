@@ -1,9 +1,11 @@
 # pretty-bash-prompt
-![screenshot pretty bash prompt](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_pretty_bash_prompt.png)  
-Based on [sexy_bash_prompt by twolfson](https://github.com/twolfson/sexy-bash-prompt)  
+## Demo
+![gif](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/pretty_bash_prompt.gif)  
   
-  
-A bash prompt with the username, the current working directory and the git branch as well as the statuses.
+A bash prompt with the username, the current working directory and the git branch as well as the statuses.  
+
+
+## Git status
 These are the symbols for the git statuses:  
   
 synced = ""  
@@ -13,7 +15,10 @@ dirty & unpushed = ▲
 unpulled = ▽  
 dirty & unpulled = ▼  
 unpushed & unpulled = ⬡  
-dirty, unpushed & unpulled= ⬢  
+dirty, unpushed & unpulled= ⬢    
+  
+![screenshot pretty bash prompt](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/screenshot_pretty_bash_prompt.png)  
+  
 
 ## Installation
 Get the .pretty_bash_prompt file:  
@@ -55,6 +60,11 @@ When another colorscheme is set print_colorscheme will show you different color 
 To change the branch color you have to do basically the same, just change your BRANCH_COLOR variable:  
 `export BRANCH_COLOR=4`  
 Just be aware that you need to set the colorscheme before you source the .pretty_bash_prompt file. Also, when you want to change your colorscheme you need to source the .pretty_bash_prompt again.  
+
+#### Change prompt symbol
+You can change the prompt symbol very easily by chaning the PROMPT_SYMBOL variable.  
+`export PROMPT_SYMBOL=">>>"`  
+
 
 #### Add battery status
 To add the battery status at the end of your prompt set the variable BATTERY_STATUS to 'on'.  
