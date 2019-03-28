@@ -92,27 +92,27 @@ fi
 # Setting the color of the directory
 function get_dir_color() {
   if [[ -z "$DIR_COLOR" ]]; then
-    printf "\001${color_array[$len_name]}\002"
+    printf "\x01${color_array[$len_name]}\x02"
   else
-    printf "\001${colors[$DIR_COLOR]}\002"
+    printf "\x01${colors[$DIR_COLOR]}\x02"
   fi
 }
 
 # Setting the branch color
 function get_branch_color() {
   if [[ -z "$BRANCH_COLOR" ]]; then
-    printf "\001${color_array[$len_name]}\002"
+    printf "\x01${color_array[$len_name]}\x02"
   else
-    printf "\001${colors[$BRANCH_COLOR]}\002"
+    printf "\x01${colors[$BRANCH_COLOR]}\x02"
   fi
 }
 
 # Setting the text color
 function get_text_color() {
   if [[ -z "$TEXT_COLOR" ]]; then
-    printf "\001${reset}\002"
+    printf "\x01${reset}\x02"
   else
-    printf "\001${colors[$TEXT_COLOR]}\002"
+    printf "\x01${colors[$TEXT_COLOR]}\x02"
   fi
 }
 
@@ -159,27 +159,27 @@ function get_battery_stat() {
     if [[ $BATTERY_STATUS == "on" ]]; then
       battery=$(acpi | awk '{ print $4 }' | sed "s/%,/%/g")
       if [[ $battery > 90 ]]; then
-        printf "\001${colors[0]}\002($battery)"
+        printf "\x01${colors[0]}\x02 [ $battery ]"
       elif [[ $battery > 80 ]]; then
-        printf "\001${colors[1]}\002($battery)"
+        printf "\x01${colors[1]}\x02 [ $battery ]"
       elif [[ $battery > 70 ]]; then
-        printf "\001${colors[2]}\002($battery)"
+        printf "\x01${colors[2]}\x02 [ $battery ]"
       elif [[ $battery > 60 ]]; then
-        printf "\001${colors[3]}\002($battery)"
+        printf "\x01${colors[3]}\x02 [ $battery ]"
       elif [[ $battery > 50 ]]; then
-        printf "\001${colors[4]}\002($battery)"
+        printf "\x01${colors[4]}\x02 [ $battery ]"
       elif [[ $battery > 40 ]]; then
-        printf "\001${colors[5]}\002($battery)"
+        printf "\x01${colors[5]}\x02 [ $battery ]"
       elif [[ $battery > 30 ]]; then
-        printf "\001${colors[6]}\002($battery)"
+        printf "\x01${colors[6]}\x02 [ $battery ]"
       elif [[ $battery > 20 ]]; then
-        printf "\001${colors[7]}\002($battery)"
+        printf "\x01${colors[7]}\x02 [ $battery ]"
       else
-        printf "\001${colors[8]}\002($battery)"
+        printf "\x01${colors[8]}\x02 [ $battery ]"
       fi
     fi
   fi
-  printf "\001$reset\002"
+  printf "\x01$reset\x02"
 }
 # 1}}}
 # git functions {{{1
@@ -330,7 +330,7 @@ done
 # prints the username character by character in different colors
 function print_colored() {
   for (( i=0; i<${#1}; i++ )); do
-    printf "\001${color_array[$i]}\002${1:$i:1} "
+    printf "\x01${color_array[$i]}\x02${1:$i:1} "
   done
 }
 
