@@ -118,13 +118,22 @@ function get_text_color() {
 
 # 1}}}
 # set symbols {{{1
-# When as root, use !! as symbol
-if [[ "$UID" == 0 ]]; then
-  symbol="!!"
-# Define the default prompt terminator character '$'
-else
-  symbol="\$"
-fi
+function set_symbol() {
+  # When as root, use !! as symbol
+  if [[ "$UID" == 0 ]]; then
+    symbol="!!"
+  # Define the default prompt terminator character '$'
+  else
+    if [[ -z "$PROMPT_SYMBOL" ]]; then
+      symbol="\$"
+    else
+      symbol="$PROMPT_SYMBOL"
+    fi
+  fi
+  for (( i=0; i<${#symbol}; i++ ));
+    do echo -n "${color_array[$i]}${symbol:$i:1} "
+  done
+}
 
 # Set up git symbols
 synced=""
@@ -333,7 +342,7 @@ PS1="\[$reset\]\$(get_name $user) \
 echo -n \"\[${color_array[$len_name]}\]on  \" && \
 echo -n \"\$(get_branch_color)\$(get_git_info)\" && \
 echo -n \"\[${color_array[$len_name]}\] \$(get_git_status)\" && \
-echo -n \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)\n\[${color_array[0]}\]$symbol \[\$(get_text_color)\]"
+echo -n \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)\n\[${color_array[0]}\]\$(set_symbol) \[\$(get_text_color)\]"
 # 1}}}
 # user functions (print_colorscheme/help) {{{1
 
