@@ -1,6 +1,6 @@
 # pretty-bash-prompt
 ## Demo
-![gif](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/pretty_bash_prompt.gif)  
+![gif](https://github.com/cmicheledelaney/pretty-bash-prompt/blob/master/demo_pretty_bash_prompt.gif)  
   
 A bash prompt with the username, the current working directory and the git branch as well as the statuses.  
 
