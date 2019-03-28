@@ -92,27 +92,27 @@ fi
 # Setting the color of the directory
 function get_dir_color() {
   if [[ -z "$DIR_COLOR" ]]; then
-    echo -n "${color_array[$len_name]}"
+    printf "\001${color_array[$len_name]}\002"
   else
-    echo -n "${colors[$DIR_COLOR]}"
+    printf "\001${colors[$DIR_COLOR]}\002"
   fi
 }
 
 # Setting the branch color
 function get_branch_color() {
   if [[ -z "$BRANCH_COLOR" ]]; then
-    echo -n "${color_array[$len_name]}"
+    printf "\001${color_array[$len_name]}\002"
   else
-    echo -n "${colors[$BRANCH_COLOR]}"
+    printf "\001${colors[$BRANCH_COLOR]}\002"
   fi
 }
 
 # Setting the text color
 function get_text_color() {
   if [[ -z "$TEXT_COLOR" ]]; then
-    echo -n "${reset}"
+    printf "\001${reset}\002"
   else
-    echo -n "${colors[$TEXT_COLOR]}"
+    printf "\001${colors[$TEXT_COLOR]}\002"
   fi
 }
 
@@ -130,9 +130,7 @@ function set_symbol() {
       symbol="$PROMPT_SYMBOL"
     fi
   fi
-  for (( i=0; i<${#symbol}; i++ ));
-    do echo -n "${color_array[$i]}${symbol:$i:1} "
-  done
+  print_colored $symbol
 }
 
 # Set up git symbols
@@ -153,13 +151,6 @@ user="[[$USER]]"
 # user="[[$(whoami)]]"
 
 
-# prints the username character by character in different colors
-function get_name() {
-  for (( i=0; i<${#1}; i++ ));
-    do echo -n "${color_array[$i]}${1:$i:1} "
-  done
-}
-
 # runs acpi to get the battery status and prints the percentage of it.
 # Depending on how much charge is left, the color changes.
 function get_battery_stat() {
@@ -168,27 +159,27 @@ function get_battery_stat() {
     if [[ $BATTERY_STATUS == "on" ]]; then
       battery=$(acpi | awk '{ print $4 }' | sed "s/%,/%/g")
       if [[ $battery > 90 ]]; then
-        echo -n "${colors[0]}($battery)"
+        printf "\001${colors[0]}\002($battery)"
       elif [[ $battery > 80 ]]; then
-        echo -n "${colors[1]}($battery)"
+        printf "\001${colors[1]}\002($battery)"
       elif [[ $battery > 70 ]]; then
-        echo -n "${colors[2]}($battery)"
+        printf "\001${colors[2]}\002($battery)"
       elif [[ $battery > 60 ]]; then
-        echo -n "${colors[3]}($battery)"
+        printf "\001${colors[3]}\002($battery)"
       elif [[ $battery > 50 ]]; then
-        echo -n "${colors[4]}($battery)"
+        printf "\001${colors[4]}\002($battery)"
       elif [[ $battery > 40 ]]; then
-        echo -n "${colors[5]}($battery)"
+        printf "\001${colors[5]}\002($battery)"
       elif [[ $battery > 30 ]]; then
-        echo -n "${colors[6]}($battery)"
+        printf "\001${colors[6]}\002($battery)"
       elif [[ $battery > 20 ]]; then
-        echo -n "${colors[7]}($battery)"
+        printf "\001${colors[7]}\002($battery)"
       else
-        echo -n "${colors[8]}($battery)"
+        printf "\001${colors[8]}\002($battery)"
       fi
     fi
   fi
-  echo -n "$reset"
+  printf "\001$reset\002"
 }
 # 1}}}
 # git functions {{{1
@@ -335,14 +326,24 @@ done
 
 # 1}}}
 # set PS1 {{{1
-PS1="\[$reset\]\$(get_name $user) \
+
+# prints the username character by character in different colors
+function print_colored() {
+  for (( i=0; i<${#1}; i++ )); do
+    printf "\001${color_array[$i]}\002${1:$i:1} "
+  done
+}
+
+NEWLINE=$'\n'
+
+PS1="\[$reset\]\$(print_colored $user) \
 \[${color_array[$len_name]}\]in  \
 \$(get_dir_color)\w  \
 \$( is_on_git && \
 echo -n \"\[${color_array[$len_name]}\]on  \" && \
 echo -n \"\$(get_branch_color)\$(get_git_info)\" && \
 echo -n \"\[${color_array[$len_name]}\] \$(get_git_status)\" && \
-echo -n \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)\n\[${color_array[0]}\]\$(set_symbol) \[\$(get_text_color)\]"
+echo -n \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)$NEWLINE\$(set_symbol) \$(get_text_color)"
 # 1}}}
 # user functions (print_colorscheme/help) {{{1
 
