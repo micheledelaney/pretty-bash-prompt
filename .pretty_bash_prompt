@@ -157,25 +157,25 @@ function get_battery_stat() {
   acpi="$(acpi -V 2> /dev/null)"
   if [[ -n $acpi ]]; then
     if [[ $BATTERY_STATUS == "on" ]]; then
-      battery=$(acpi | awk '{ print $4 }' | sed "s/%,/%/g")
+      battery=$(acpi | awk '{ print $4 }' | sed "s/%,//g")
       if [[ $battery > 90 ]]; then
-        printf "\x01${colors[0]}\x02 [ $battery ]"
+        printf "%s""\x01${colors[0]}\x02 [ $battery%% ]"
       elif [[ $battery > 80 ]]; then
-        printf "\x01${colors[1]}\x02 [ $battery ]"
+        printf "\x01${colors[1]}\x02 [ $battery%% ]"
       elif [[ $battery > 70 ]]; then
-        printf "\x01${colors[2]}\x02 [ $battery ]"
+        printf "\x01${colors[2]}\x02 [ $battery%% ]"
       elif [[ $battery > 60 ]]; then
-        printf "\x01${colors[3]}\x02 [ $battery ]"
+        printf "\x01${colors[3]}\x02 [ $battery%% ]"
       elif [[ $battery > 50 ]]; then
-        printf "\x01${colors[4]}\x02 [ $battery ]"
+        printf "\x01${colors[4]}\x02 [ $battery%% ]"
       elif [[ $battery > 40 ]]; then
-        printf "\x01${colors[5]}\x02 [ $battery ]"
+        printf "\x01${colors[5]}\x02 [ $battery%% ]"
       elif [[ $battery > 30 ]]; then
-        printf "\x01${colors[6]}\x02 [ $battery ]"
+        printf "\x01${colors[6]}\x02 [ $battery%% ]"
       elif [[ $battery > 20 ]]; then
-        printf "\x01${colors[7]}\x02 [ $battery ]"
+        printf "\x01${colors[7]}\x02 [ $battery%% ]"
       else
-        printf "\x01${colors[8]}\x02 [ $battery ]"
+        printf "\x01${colors[8]}\x02 [ $battery%% ]"
       fi
     fi
   fi
@@ -189,9 +189,9 @@ function get_git_branch() {
   # On non-branches, (no branch)
   ref="$(git symbolic-ref HEAD 2> /dev/null | sed -e 's/refs\/heads\///')"
   if [[ "$ref" != "" ]]; then
-    echo "$ref"
+    printf "%s" "$ref"
   else
-    echo "(no branch)"
+    printf "%s" "(no branch)"
   fi
 }
 
@@ -211,33 +211,33 @@ function branch_exists () {
 function parse_git_ahead () {
   # Grab the local and remote branch
   branch="$(get_git_branch)"
-  remote="$(git config --get "branch.${branch}.remote" || echo -n "origin")"
+  remote="$(git config --get "branch.${branch}.remote" || printf -n "origin")"
   remote_branch="$remote/$branch"
   # If the remote branch is behind the local branch
   # or it has not been merged into origin (remote branch doesn't exist)
   if (is_branch1_behind_branch2 "$remote_branch" "$branch" ||
       ! branch_exists "$remote_branch"); then
-    # echo our character
-    echo 1
+    # Print our character
+    printf 1
   fi
 }
 
 function parse_git_behind () {
   # Grab the branch
   branch="$(get_git_branch)"
-  remote="$(git config --get "branch.${branch}.remote" || echo -n "origin")"
+  remote="$(git config --get "branch.${branch}.remote" || printf -n "origin")"
   remote_branch="$remote/$branch"
   # If the local branch is behind the remote branch
   if is_branch1_behind_branch2 "$branch" "$remote_branch"; then
-    # echo our character
-    echo 1
+    # Print our character
+    printf 1
   fi
 }
 
 function parse_git_dirty() {
-  # If the git status has *any* changes (e.g. dirty), echo our character
+  # If the git status has *any* changes (e.g. dirty), print our character
   if [[ -n "$(git status --porcelain 2> /dev/null)" ]]; then
-    echo 1
+    printf 1
   fi
 }
 
@@ -252,23 +252,23 @@ function get_git_status() {
   branch_ahead="$(parse_git_ahead)"
   branch_behind="$(parse_git_behind)"
 
-  # Iterate through all the cases and if it matches, then echo
-  if [[ "$dirty_branch" == 1 && "$branch_ahead" == 1 && "$branch_behind" == 1 ]]; then
-    echo "$dirty_unpushed_unpulled"
-  elif [[ "$branch_ahead" == 1 && "$branch_behind" == 1 ]]; then
-    echo "$unpushed_unpulled"
-  elif [[ "$dirty_branch" == 1 && "$branch_ahead" == 1 ]]; then
-    echo "$dirty_unpushed"
-  elif [[ "$branch_ahead" == 1 ]]; then
-    echo "$unpushed"
-  elif [[ "$dirty_branch" == 1 && "$branch_behind" == 1 ]]; then
-    echo "$dirty_unpulled"
-  elif [[ "$branch_behind" == 1 ]]; then
-    echo "$unpulled"
-  elif [[ "$dirty_branch" == 1 ]]; then
-    echo "$dirty_synced"
-  else # clean
-    echo "$synced"
+    # Iterate through all the cases and if it matches, then printf
+    if [[ "$dirty_branch" == 1 && "$branch_ahead" == 1 && "$branch_behind" == 1 ]]; then
+      printf "$dirty_unpushed_unpulled"
+    elif [[ "$branch_ahead" == 1 && "$branch_behind" == 1 ]]; then
+      printf "$unpushed_unpulled"
+    elif [[ "$dirty_branch" == 1 && "$branch_ahead" == 1 ]]; then
+      printf "$dirty_unpushed"
+    elif [[ "$branch_ahead" == 1 ]]; then
+      printf "$unpushed"
+    elif [[ "$dirty_branch" == 1 && "$branch_behind" == 1 ]]; then
+      printf "$dirty_unpulled"
+    elif [[ "$branch_behind" == 1 ]]; then
+      printf "$unpulled"
+    elif [[ "$dirty_branch" == 1 ]]; then
+      printf "$dirty_synced"
+    else # clean
+      printf "$synced"
   fi
 }
 
@@ -278,10 +278,9 @@ function get_git_info () {
 
   # If there are any branches
   if [[ "$branch" != "" ]]; then
-    # Echo the branch
     output="$branch"
     # Echo our output
-    echo "$output"
+    printf "$output"
   fi
 }
 
@@ -340,23 +339,23 @@ PS1="\[$reset\]\$(print_colored $user) \
 \[${color_array[$len_name]}\]in  \
 \$(get_dir_color)\w  \
 \$( is_on_git && \
-echo -n \"\[${color_array[$len_name]}\]on  \" && \
-echo -n \"\$(get_branch_color)\$(get_git_info)\" && \
-echo -n \"\[${color_array[$len_name]}\] \$(get_git_status)\" && \
-echo -n \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)$NEWLINE\$(set_symbol) \$(get_text_color)"
+printf \"\[${color_array[$len_name]}\]on  \" && \
+printf \"\$(get_branch_color)\$(get_git_info)\" && \
+printf \"\[${color_array[$len_name]}\] \$(get_git_status)\" && \
+printf \"\[${color_array[$len_name]}\] \")\$(get_battery_stat)$NEWLINE\$(set_symbol) \$(get_text_color)"
 # 1}}}
 # user functions (print_colorscheme/help) {{{1
 
 # prints the available colors in the chosen colorscheme with their values
 function print_colorscheme() {
   for (( i=0; i<${#colors[@]}; i++ )); do
-    echo "${colors[$i]}color: $i"
+    printf "%s" "${colors[$i]}color: $i $NEWLINE"
   done
 }
 
 # general information about the settings
 function pretty_bash_prompt() {
-  echo "Pretty Bash Prompt by cmicheledelaney
+  printf "%s" "Pretty Bash Prompt by cmicheledelaney
 https://github.com/cmicheledelaney
 
 To set a different colorscheme set the value of COLOR_SCHEME_PROMPT to 'red', 'blue', 'yellow', or nothing if you want the default colorscheme.
@@ -377,7 +376,7 @@ To display the battery status set the BATTERY_STATUS variable to 'on' (only work
 
 To change the prompt symbol:
 
-      export PRETTY_PROMPT_SYMBOL='>>>'
+      export PRETTY_PROMPT_SYMBOL='>>>'$NEWLINE
 "
 }
 # 1}}}
