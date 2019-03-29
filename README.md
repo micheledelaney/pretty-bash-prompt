@@ -63,7 +63,7 @@ Just be aware that you need to set the colorscheme before you source the .pretty
 
 #### Change prompt symbol
 You can change the prompt symbol very easily by chaning the PROMPT_SYMBOL variable.  
-`export PROMPT_SYMBOL=">>>"`  
+`export PRETTY_PROMPT_SYMBOL=">>>"`  
 
 
 #### Add battery status
