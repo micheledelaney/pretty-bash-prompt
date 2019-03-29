@@ -124,10 +124,10 @@ function set_symbol() {
     symbol="!!"
   # Define the default prompt terminator character '$'
   else
-    if [[ -z "$PROMPT_SYMBOL" ]]; then
+    if [[ -z "$PRETTY_PROMPT_SYMBOL" ]]; then
       symbol="\$"
     else
-      symbol="$PROMPT_SYMBOL"
+      symbol="$PRETTY_PROMPT_SYMBOL"
     fi
   fi
   print_colored $symbol
@@ -373,7 +373,11 @@ To set the color of the branch just set BRANCH_COLOR accordingly.
 
 To display the battery status set the BATTERY_STATUS variable to 'on' (only works when acpi is installed).
 
-      export BATTER_STATUS='on'
+      export BATTERY_STATUS='on'  
+
+To change the prompt symbol:
+
+      export PRETTY_PROMPT_SYMBOL='>>>'
 "
 }
 # 1}}}
