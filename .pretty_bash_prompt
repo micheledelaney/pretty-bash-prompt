@@ -144,11 +144,19 @@ unpushed_unpulled="⬡"
 dirty_unpushed_unpulled="⬢"
 
 # 1}}}
-# get information (username, battery stat) {{{1
+# get information (username, battery stat, hostname) {{{1
 # If you want your username to depend on the ENV variable, use this:
 user="[[$USER]]"
 # Otherwise, use this:
 # user="[[$(whoami)]]"
+
+# prints the hostname if the variable is set
+function get_hostname() {
+  hostname=$(hostname)
+  if [[ -n $PRETTY_PROMPT_HOSTNAME ]]; then
+    printf "%s" "@ $hostname  "
+  fi
+}
 
 
 # runs acpi to get the battery status and prints the percentage of it.
@@ -336,7 +344,7 @@ function print_colored() {
 NEWLINE=$'\n'
 
 PS1="\[$reset\]\$(print_colored $user) \
-\[${color_array[$len_name]}\]in  \
+\[${color_array[$len_name]}\]\$(get_hostname)in  \
 \$(get_dir_color)\w  \
 \$( is_on_git && \
 printf \"\[${color_array[$len_name]}\]on  \" && \
