@@ -68,7 +68,7 @@ You can change the prompt symbol very easily by chaning the PROMPT_SYMBOL variab
 #### Display hostname
 Set the variable PRETTY_PROMPT_HOSTNAME to 'on' if you want the hostname to be displayed after the username.
 `export PRETTY_PROMPT_HOSTNAME='on'`  
-The color of the hostname can be changed though setting the PRETTY_PROMPT_HOSTNAME_COLOR variable:
+The color of the hostname can be changed through setting the PRETTY_PROMPT_HOSTNAME_COLOR variable:  
 `export PRETTY_PROMPT_HOSTNAME_COLOR=3`  
 
 #### Add battery status
