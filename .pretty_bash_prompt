@@ -154,7 +154,11 @@ user="[[$USER]]"
 function get_hostname() {
   hostname=$(hostname)
   if [[ $PRETTY_PROMPT_HOSTNAME == 'on' ]]; then
-    printf "%s" "@ $hostname  "
+    printf "%s" "@"
+    if [[ -n $PRETTY_PROMPT_HOSTNAME_COLOR ]]; then
+      printf "%s" "${colors[$PRETTY_PROMPT_HOSTNAME_COLOR]}"
+    fi
+    printf "%s" " $hostname  "
   fi
 }
 
@@ -344,7 +348,7 @@ function print_colored() {
 NEWLINE=$'\n'
 
 PS1="\[$reset\]\$(print_colored $user) \
-\[${color_array[$len_name]}\]\$(get_hostname)in  \
+\[${color_array[$len_name]}\]\$(get_hostname)\[${color_array[$len_name]}\]in  \
 \$(get_dir_color)\w  \
 \$( is_on_git && \
 printf \"\[${color_array[$len_name]}\]on  \" && \
@@ -385,6 +389,10 @@ To display the battery status set the BATTERY_STATUS variable to 'on' (only work
 The hostname will get displayed if the variable PRETTY_PROMPT_HOSTNAME is set to 'on'.
 
       export PRETTY_BASH_HOSTNAME='on'
+
+The color of the hostname can be changed through changing the PRETTY_BASH_HOSTNAME_COLOR variable.
+
+      export PRETTY_PROMPT_HOSTNAME_COLOR=3
 
 To change the prompt symbol:
 
