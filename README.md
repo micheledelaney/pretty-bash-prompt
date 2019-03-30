@@ -65,6 +65,9 @@ Just be aware that you need to set the colorscheme before you source the .pretty
 You can change the prompt symbol very easily by chaning the PROMPT_SYMBOL variable.  
 `export PRETTY_PROMPT_SYMBOL=">>>"`  
 
+#### Display hostname
+Set the variable PRETTY_PROMPT_HOSTNAME to 'on' if you want the hostname to be displayed after the username.
+`export PRETTY_PROMPT_HOSTNAME=on`  
 
 #### Add battery status
 To add the battery status at the end of your prompt set the variable BATTERY_STATUS to 'on'.  
