@@ -153,7 +153,7 @@ user="[[$USER]]"
 # prints the hostname if the variable is set
 function get_hostname() {
   hostname=$(hostname)
-  if [[ -n $PRETTY_PROMPT_HOSTNAME ]]; then
+  if [[ $PRETTY_PROMPT_HOSTNAME == 'on' ]]; then
     printf "%s" "@ $hostname  "
   fi
 }
@@ -380,7 +380,11 @@ To set the color of the branch just set BRANCH_COLOR accordingly.
 
 To display the battery status set the BATTERY_STATUS variable to 'on' (only works when acpi is installed).
 
-      export BATTERY_STATUS='on'  
+      export BATTERY_STATUS='on'
+
+The hostname will get displayed if the variable PRETTY_PROMPT_HOSTNAME is set to 'on'.
+
+      export PRETTY_BASH_HOSTNAME='on'
 
 To change the prompt symbol:
 
