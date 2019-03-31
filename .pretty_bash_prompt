@@ -147,17 +147,8 @@ dirty_unpushed_unpulled="⬢"
 # get information (username, battery stat, hostname) {{{1
 # If you want your username to depend on the ENV variable, use this:
 # Otherwise, use this:
+user="[[$USER]]"
 # user="[[$(whoami)]]"
-
-function setting_user() {
-  user="$USER"
-  if [[ $PRETTY_PROMPT_HOSTNAME == 'user' ]]; then
-    hostname=$(hostname)
-    user="[[$user@$hostname]]"
-  else
-    user="[[$user]]"
-  fi
-}
 
 # prints the hostname if the variable is set
 function get_hostname() {
@@ -356,7 +347,7 @@ function print_colored() {
 
 NEWLINE=$'\n'
 
-PS1="\$(setting_user)\[$reset\]\$(print_colored $user) \
+PS1="\[$reset\]\$(print_colored $user) \
 \[${color_array[$len_name]}\]\$(get_hostname)\[${color_array[$len_name]}\]in  \
 \$(get_dir_color)\w  \
 \$( is_on_git && \
