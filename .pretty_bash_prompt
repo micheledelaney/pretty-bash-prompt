@@ -144,16 +144,16 @@ unpushed_unpulled="⬡"
 dirty_unpushed_unpulled="⬢"
 
 # 1}}}
-# get information (username, battery stat, hostname) {{{1
+# Get information (username, battery stat, hostname) {{{1
 # If you want your username to depend on the ENV variable, use this:
 # Otherwise, use this:
 user="[[$USER]]"
 # user="[[$(whoami)]]"
 
-# prints the hostname if the variable is set
+# Prints the hostname if the variable is set
 function get_hostname() {
-  hostname=$(hostname)
   if [[ $PRETTY_PROMPT_HOSTNAME == 'on' ]]; then
+    hostname=$(hostname)
     printf "%s" "@"
     if [[ -n $PRETTY_PROMPT_HOSTNAME_COLOR ]]; then
       printf "%s" "${colors[$PRETTY_PROMPT_HOSTNAME_COLOR]}"
@@ -163,32 +163,29 @@ function get_hostname() {
 }
 
 
-# runs acpi to get the battery status and prints the percentage of it.
+# Runs acpi to get the battery status and it.
 # Depending on how much charge is left, the color changes.
 function get_battery_stat() {
-  acpi="$(acpi -V 2> /dev/null)"
-  if [[ -n $acpi ]]; then
-    if [[ $BATTERY_STATUS == "on" ]]; then
-      battery=$(acpi | awk '{ print $4 }' | sed "s/%,//g")
-      if [[ $battery > 90 ]]; then
-        printf "%s""\x01${colors[0]}\x02 [ $battery%% ]"
-      elif [[ $battery > 80 ]]; then
-        printf "\x01${colors[1]}\x02 [ $battery%% ]"
-      elif [[ $battery > 70 ]]; then
-        printf "\x01${colors[2]}\x02 [ $battery%% ]"
-      elif [[ $battery > 60 ]]; then
-        printf "\x01${colors[3]}\x02 [ $battery%% ]"
-      elif [[ $battery > 50 ]]; then
-        printf "\x01${colors[4]}\x02 [ $battery%% ]"
-      elif [[ $battery > 40 ]]; then
-        printf "\x01${colors[5]}\x02 [ $battery%% ]"
-      elif [[ $battery > 30 ]]; then
-        printf "\x01${colors[6]}\x02 [ $battery%% ]"
-      elif [[ $battery > 20 ]]; then
-        printf "\x01${colors[7]}\x02 [ $battery%% ]"
-      else
-        printf "\x01${colors[8]}\x02 [ $battery%% ]"
+  # If user wants to display the battery status set it
+  if [[ $BATTERY_STATUS == "on" ]]; then
+    # Checks if acpi is available and sets 'acpi' to the output
+    acpi="$(acpi 2> /dev/null)"
+    # if acpi is not empty
+    if [[ -n $acpi ]]; then
+      # Gets the value of acpi that says 'charging' or 'discharging'
+      batt_status=$(echo $acpi | awk '{ print $3 }')
+      # Gets the percentage of the charge
+      battery=$(echo $acpi | awk '{ print $4 }' | sed "s/%,//g")
+      # Gets the right color nbr (low charge = high number)
+      color_nbr=$(( 9 - $battery / 10 ))
+      if [[ $color_nbr < 0 ]]; then
+        color_nbr=0
+      elif [[ $color_nbr > 8 ]]; then
+        color_nbr=8
       fi
+      # Changes the color code so that it is not bold
+      color_non_bold=$(echo ${colors[$color_nbr]} | sed s/./0/3)
+      printf "\x01${color_non_bold}\x02 [ $batt_status $battery%% ]"
     fi
   fi
   printf "\x01$reset\x02"
