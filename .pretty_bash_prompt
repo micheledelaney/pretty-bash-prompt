@@ -175,10 +175,11 @@ function get_battery_stat() {
       # Gets the value of acpi that says 'charging' or 'discharging'
       batt_status=$(echo $acpi | awk '{ print $3 }')
       # Gets the percentage of the charge
-      battery=$(echo $acpi | awk '{ print $4 }' | sed "s/%,//g")
+      battery=$(echo $acpi | awk '{ print $4 }' | sed "s/,//g")
+      battery=$(echo $battery | sed "s/%//g")
       # Gets the right color nbr (low charge = high number)
       color_nbr=$(( 9 - $battery / 10 ))
-      if [[ $color_nbr < 0 ]]; then
+      if [[ $battery_nbr < 0 ]]; then
         color_nbr=0
       elif [[ $color_nbr > 8 ]]; then
         color_nbr=8
