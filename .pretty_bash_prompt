@@ -179,7 +179,7 @@ function get_battery_stat() {
       battery=$(echo $battery | sed "s/%//g")
       # Gets the right color nbr (low charge = high number)
       color_nbr=$(( 9 - $battery / 10 ))
-      if [[ $battery_nbr < 0 ]]; then
+      if [[ $color_nbr < 0 ]]; then
         color_nbr=0
       elif [[ $color_nbr > 8 ]]; then
         color_nbr=8
